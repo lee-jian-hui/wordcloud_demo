@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *;**script-src 'self' http://onlineerp.solution.quebec 'unsafe-inline' 'unsafe-eval';** "> -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.js"></script>
+  </head>
+  <body>
+    <h3>Interactive Poll</h3>
+    <form id="pollForm">
+      <label for="email">Email:</label><br>
+      <input type="email" id="email" name="email" required><br><br>
+      <label for="answer">Your Answer:</label><br>
+      <input type="text" id="answer" name="answer" required><br><br>
+      <button type="button" onclick="submitPoll()">Submit</button>
+    </form>
+    <div id="responseMessage"></div>
+    <button type="button" onclick="generateWordCloud()">Generate Word Cloud</button>
+    <div id="wordCloud" style="width: 600px; height: 400px;"></div>
+
+    <script>
+      function submitWord() {
+        const form = document.getElementById('pollForm');
+        const email = form.email.value;
+        const answer = form.answer.value;
+
+        google.script.run
+          .withSuccessHandler(function(response) {
+            document.getElementById('responseMessage').innerText = response;
+          })
+          .submitResponse({email: email, answer: answer});
+      }
+
+      function generateWordCloud() {
+        google.script.run
+          .withSuccessHandler(function(data) {
+            const wordList = data.map(item => [item[1], 10]);
+            WordCloud(document.getElementById('wordCloud'), { list: wordList });
+          })
+          .getResponses();
+      }
+
+      // word cloud
+      /*!
+      * wordcloud2.js
+      * http://timdream.org/wordcloud2.js/
+      *
+      * Copyright 2011 - 2019 Tim Guan-tin Chien and contributors.
+      * Released under the MIT license
+      */
+
+      
+    </script>
+  </body>
+</html>
+
+
+
